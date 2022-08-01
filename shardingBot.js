@@ -9,16 +9,17 @@ import {
   getInteractionEvent,
   getPackage,
   getReadyEvent,
+  getShardingIndex,
 } from "./builds.js";
 
-const basicBot = async () => {
+const shardingBot = async () => {
   //Starting spinners
   const directorySpinner = createSpinner("Creating new folders...").start();
   let nodeModulesSpinner;
-  if (createModules) {
+  if (createModules)
     nodeModulesSpinner = createSpinner("Creating node_modules...").start();
-  }
   const indexCreationSpinner = createSpinner("Creating index.js...").start();
+  const botCreationSpinner = createSpinner("Creating bot.js...").start();
   const envCreationSpinner = createSpinner("Creating .env...").start();
   const eventsSpinner = createSpinner("Creating events...").start();
 
@@ -26,6 +27,7 @@ const basicBot = async () => {
     directorySpinner,
     nodeModulesSpinner,
     indexCreationSpinner,
+    botCreationSpinner,
     envCreationSpinner,
     eventsSpinner
   );
@@ -35,6 +37,7 @@ const createFolders = async (
   directorySpinner,
   nodeModulesSpinner,
   indexCreationSpinner,
+  botCreationSpinner,
   envCreationSpinner,
   eventsSpinner
 ) => {
@@ -62,11 +65,19 @@ const createFolders = async (
       }
 
       //Create index.js
-      fs.writeFile(`${folderName}/index.js`, getIndex(), (err) => {
+      fs.writeFile(`${folderName}/index.js`, getShardingIndex(), (err) => {
         if (err) throw err;
       });
       indexCreationSpinner.success({
         text: "index.js created successfully!",
+      });
+
+      //Create bot.js
+      fs.writeFile(`${folderName}/bot.js`, getIndex(), (err) => {
+        if (err) throw err;
+      });
+      botCreationSpinner.success({
+        text: "bot.js created successfully!",
       });
 
       //Create .env
@@ -110,7 +121,7 @@ const createFolders = async (
         text: "Folders created successfully!",
       });
     } else {
-      directorySpinner.error("Folder src already exist!");
+      spinner.error("Folder src already exist!");
     }
   } catch (e) {
     console.log(e);
@@ -118,4 +129,4 @@ const createFolders = async (
   }
 };
 
-export default basicBot;
+export default shardingBot;

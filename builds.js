@@ -33,46 +33,72 @@ require("./handler.js")(client);
 client.login(process.env.TOKEN);`;
 };
 
+export const getShardingIndex = () => {
+  let stringOne = `required("dotenv").config();
+const { ShardingManager } = require("discord.js");
+
+const shards = new ShardingManager("./bot.js", {
+  totalShards: "auto",
+  mode: "process",
+  token: process.env.TOKEN,
+  respawn: true,
+});
+
+shards.on("shardCreate", async (shard) => {
+`;
+  let stringTwo = "  console.log(`Shard #${shard.id} Launched`);";
+  let stringThree = `\n});
+
+shards.spawn().catch((err) => console.error(err));`;
+
+  return stringOne + stringTwo + stringThree;
+};
+
 export const getEnv = (botToken) => {
   return `TOKEN = ${botToken}`;
 };
 
 export const getHandler = () => {
-  return `const { glob } = require("glob");
+  let stringOne = `const { glob } = require("glob");
 const { promisify } = require("util");
 
 const globPromise = promisify(glob);
 
-module.exports = async (client) => {
-  const eventFiles = await globPromise('\`'${process.cwd()}/events/**/*.js\`);
+module.exports = async (client) => {`;
 
+  let stringTwo =
+    "\n  const eventFiles = await globPromise(`${process.cwd()}/events/**/*.js`);";
+
+  let stringThree = `
   eventFiles.map((value) => require(value));
 
-  const slashCommands = await globPromise(
-    \`${process.cwd()}/commands/**/*.js\`
-  );
+  const slashCommands = await globPromise(`;
 
+  let stringFour = "`${process.cwd()}/commands/**/*.js`);";
+  let stringFive = `
   slashCommands.map((value) => {
     const file = require(value);
     if (!file?.name) return;
     client.commands.set(file.name, file);
   });
 };`;
+  return stringOne + stringTwo + stringThree + stringFour + stringFive;
 };
 
 export const getReadyEvent = (botName) => {
-  return `const client = require("../../index");
+  let stringOne = `const client = require("../../index");
 
-client.on("ready", async () => {
-  console.log("xd ✅");
-});`;
+client.on("ready", () => {\n`;
+  let stringTwo = "  console.log(`${client.user.username} ✅`);";
+  let stringThree = `\n});`;
+  return stringOne + stringTwo + stringThree;
 };
 
 export const getInteractionEvent = () => {
-  return `const client = require("../../index");
-const { InteractionType } = require("discord.js");
+  return `const { InteractionType } = require("discord.js");
+const client = require("../../index");
 
-client.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", (interaction) => {
   if (interaction.type == InteractionType.ApplicationCommand) {
     const command = client.commands.get(interaction.commandName);
     if (!command)
@@ -98,4 +124,4 @@ client.on("interactionCreate", async (interaction) => {
     command.run(client, interaction, args);
   }
 });`;
-}
+};

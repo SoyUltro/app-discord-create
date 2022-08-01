@@ -13,10 +13,30 @@ npx app-discord-create
 
 Follow the instructions, this is easy!
 
-## Generated project
+## Basic Project
 ```
-generated-project
 ├── node_modules
+├── events
+│   └─client
+│     ├── ready.js
+│     └── interaction.js
+├── handler.js
+├── index.js
+├── package.json
+├── package-lock.json
+├── README.md
+└── .gitignore
+```
+
+## Sharding Project
+```
+├── node_modules
+├── events
+│   └─client
+│     ├── ready.js
+│     └── interaction.js
+├── handler.js
+├── bot.js
 ├── index.js
 ├── package.json
 ├── package-lock.json

@@ -1,6 +1,6 @@
 {
   "name": "app-discord-create",
-  "version": "1.0.0",
+  "version": "2..0",
   "description": "A CLI tool to create a Discord bot",
   "main": "index.js",
   "type": "module",
@@ -29,7 +29,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/npm/cli.git"
+    "url": "https://github.com/SoyUltro/app-discord-create.git"
   },
   "dependencies": {
     "inquirer": "9.0.2",

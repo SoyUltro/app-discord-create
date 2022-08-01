@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
 import basicBot from "./basicBot.js";
-import customBot from "./customBot.js";
-
-const sleep = (ms = 2000) => new Promise((r) => setTimeout(r, ms));
+import shardingBot from "./shardingBot.js";
 
 export let botName;
 export let botToken;
+export let createModules;
 
-async function askBotName() {
+const askBotName = async () => {
   const answers = await inquirer.prompt({
     name: "bot_name",
     type: "input",
@@ -19,9 +18,9 @@ async function askBotName() {
   });
 
   botName = answers.bot_name;
-}
+};
 
-async function askBotToken() {
+const askBotToken = async () => {
   const answers = await inquirer.prompt({
     name: "bot_token",
     type: "password",
@@ -32,33 +31,55 @@ async function askBotToken() {
   });
 
   botToken = answers.bot_token;
-}
+};
 
-const botPreferQuestion = async () => {
+const askCreateModules = async () => {
   const answers = await inquirer.prompt({
-    name: "botPrefer",
+    name: "create_modules",
     type: "list",
-    message: "What type of bot do you want to create?",
+    message: "Do you want to us to generate node_modules automatically?",
     choices: [
       {
-        name: "Create a basic bot (faster)",
-        value: "basic_bot",
+        name: "Yes",
+        value: true,
       },
       {
-        name: "Create a custom bot (recommended)",
-        value: "custom_bot",
+        name: "No",
+        value: false,
       },
     ],
   });
 
-  return handleBotPrefer(answers.botPrefer);
+  createModules = answers.create_modules;
 };
 
-const handleBotPrefer = async (botPrefer) => {
+const botTypeQuestion = async () => {
+  const answers = await inquirer.prompt({
+    name: "botType",
+    type: "list",
+    message: "What type of bot do you want to create?",
+    choices: [
+      {
+        name: "Create a basic bot (recommended)",
+        value: "basic_bot",
+      },
+      {
+        name: "Create a sharding bot",
+        value: "sharding_bot",
+      },
+    ],
+  });
+
+  return handleBotType(answers.botType);
+};
+
+const handleBotType = async (botPrefer) => {
   if (botPrefer === "basic_bot") return basicBot();
-  return customBot;
+  if (botPrefer === "sharding_bot") return shardingBot();
+  throw new Error("Invalid bot type");
 };
 
 await askBotName();
 await askBotToken();
-await botPreferQuestion();
+await askCreateModules();
+await botTypeQuestion();
