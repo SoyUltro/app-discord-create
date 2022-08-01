@@ -24,7 +24,7 @@ const askBotToken = async () => {
   const answers = await inquirer.prompt({
     name: "bot_token",
     type: "password",
-    message: "How do you want to name your bot?",
+    message: "Enter your Discord Bot Token (press enter for empty)",
     default() {
       return "your-token-from-discord-api";
     },
