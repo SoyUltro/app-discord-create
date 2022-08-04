@@ -1,8 +1,13 @@
+import path from "path";
 import fs from "fs";
 import fse from "fs-extra";
+import { fileURLToPath } from "url";
 import { createSpinner } from "nanospinner";
 import { createModules } from "./index.js";
 import { exec } from "child_process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const basicBot = async () => {
 	//Starting spinners
@@ -22,7 +27,7 @@ const createFolders = async (directorySpinner, nodeModulesSpinner) => {
 			fs.mkdirSync(folderName);
 
 			//Copying files -> ./package/basic
-			fse.copy("./package/basic", `${folderName}`, err => {
+			fse.copy(path.join(__dirname, "/package/basic"), `${folderName}`, err => {
 				if (err) {
 					directorySpinner.error({
 						text: `Folder ${folderName} could not be created`
@@ -35,7 +40,7 @@ const createFolders = async (directorySpinner, nodeModulesSpinner) => {
 			});
 
 			if (createModules) {
-				exec("npm install", { cwd: "./" + folderName }, (err, stdout, stderr) => {
+				exec("npm install", { cwd: path.join(__dirname, folderName) }, (err, stdout, stderr) => {
 					if (err) {
 						nodeModulesSpinner.error({
 							text: "Node modules creation failed!"
