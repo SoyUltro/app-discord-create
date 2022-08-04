@@ -32,6 +32,7 @@
     "url": "https://github.com/SoyUltro/app-discord-create.git"
   },
   "dependencies": {
+    "fs-extra": "^10.1.0",
     "inquirer": "9.0.2",
     "nanospinner": "1.1.0"
   }

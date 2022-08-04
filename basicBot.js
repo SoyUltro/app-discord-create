@@ -1,121 +1,62 @@
 import fs from "fs";
+import fse from "fs-extra";
 import { createSpinner } from "nanospinner";
-import { botName, botToken, createModules } from "./index.js";
+import { createModules } from "./index.js";
 import { exec } from "child_process";
-import {
-  getEnv,
-  getHandler,
-  getIndex,
-  getInteractionEvent,
-  getPackage,
-  getReadyEvent,
-} from "./builds.js";
 
 const basicBot = async () => {
-  //Starting spinners
-  const directorySpinner = createSpinner("Creating new folders...").start();
-  let nodeModulesSpinner;
-  if (createModules) {
-    nodeModulesSpinner = createSpinner("Creating node_modules...").start();
-  }
-  const indexCreationSpinner = createSpinner("Creating index.js...").start();
-  const envCreationSpinner = createSpinner("Creating .env...").start();
-  const eventsSpinner = createSpinner("Creating events...").start();
+	//Starting spinners
+	const directorySpinner = createSpinner("Creating new folders...").start();
+	let nodeModulesSpinner;
+	if (createModules) nodeModulesSpinner = createSpinner("Creating node_modules...").start();
 
-  createFolders(
-    directorySpinner,
-    nodeModulesSpinner,
-    indexCreationSpinner,
-    envCreationSpinner,
-    eventsSpinner
-  );
+	createFolders(directorySpinner, nodeModulesSpinner);
 };
 
-const createFolders = async (
-  directorySpinner,
-  nodeModulesSpinner,
-  indexCreationSpinner,
-  envCreationSpinner,
-  eventsSpinner
-) => {
-  try {
-    const folderName = botName;
+const createFolders = async (directorySpinner, nodeModulesSpinner) => {
+	try {
+		const folderName = "Bot";
 
-    if (!fs.existsSync(folderName)) {
-      // Create package.json
-      fs.mkdirSync(folderName);
-      fs.writeFile(`${folderName}/package.json`, getPackage(botName), (err) => {
-        if (err) throw err;
-      });
+		if (!fs.existsSync(folderName)) {
+			//Creating folder
+			fs.mkdirSync(folderName);
 
-      if (createModules) {
-        exec(
-          "npm install",
-          { cwd: "./" + folderName },
-          (err, stdout, stderr) => {
-            if (err) throw err;
-            nodeModulesSpinner.success({
-              text: "Node modules created successfully!",
-            });
-          }
-        );
-      }
+			//Copying files -> ./package/basic
+			fse.copy("./package/basic", `${folderName}`, err => {
+				if (err) {
+					directorySpinner.error({
+						text: `Folder ${folderName} could not be created`
+					});
+					throw new Error(err);
+				}
+				directorySpinner.success({
+					text: `Folder ${folderName} created successfully!`
+				});
+			});
 
-      //Create index.js
-      fs.writeFile(`${folderName}/index.js`, getIndex(), (err) => {
-        if (err) throw err;
-      });
-      indexCreationSpinner.success({
-        text: "index.js created successfully!",
-      });
-
-      //Create .env
-      fs.writeFile(`${folderName}/.env`, getEnv(botToken), (err) => {
-        if (err) throw err;
-      });
-      envCreationSpinner.success({
-        text: ".env created successfully!",
-      });
-
-      //Create handler.js
-      fs.writeFile(`${folderName}/handler.js`, getHandler(), (err) => {
-        if (err) throw err;
-      });
-
-      //Create events folder
-      fs.mkdirSync(`${folderName}/events`);
-      fs.mkdirSync(`${folderName}/events/client`);
-      //Create ready event
-      fs.writeFile(
-        `${folderName}/events/client/ready.js`,
-        getReadyEvent(botName),
-        (err) => {
-          if (err) throw err;
-        }
-      );
-      //Create interaction event
-      fs.writeFile(
-        `${folderName}/events/client/interaction.js`,
-        getInteractionEvent(),
-        (err) => {
-          if (err) throw err;
-        }
-      );
-
-      eventsSpinner.success({
-        text: "events created successfully!",
-      });
-
-      directorySpinner.success({
-        text: "Folders created successfully!",
-      });
-    } else {
-      directorySpinner.error("Folder src already exist!");
-    }
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
-  }
+			if (createModules) {
+				exec("npm install", { cwd: "./" + folderName }, (err, stdout, stderr) => {
+					if (err) {
+						nodeModulesSpinner.error({
+							text: "Node modules creation failed!"
+						});
+						throw new Error(err);
+					}
+					nodeModulesSpinner.success({
+						text: "Node modules created successfully!"
+					});
+				});
+			}
+		} else {
+			directorySpinner.error({
+				text: `Folder ${folderName} already exist!`
+			});
+			process.exit(1);
+		}
+	} catch (e) {
+		console.log(e);
+		process.exit(1);
+	}
 };
 
 export default basicBot;
