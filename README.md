@@ -12,7 +12,7 @@ Are you tired of copy and paste your old codes of discord bots? Or just want to 
 npx app-discord-create
 ```
 
-## Args
+## Args (Optional)
 * `--modules`: Use this argument to specify if you want to us to create node_module folder.
 * `--basic`: Set this argument if you want to create basic bot.
 * `--shard`: Set this argument if you want to create a sharding bot.
@@ -26,6 +26,9 @@ Follow the instructions, this is easy!
 │   └─client
 │     ├── ready.js
 │     └── interaction.js
+├── commands
+│   └─example
+│     └── ping.js
 ├── handler.js
 ├── index.js
 ├── package.json
@@ -41,6 +44,9 @@ Follow the instructions, this is easy!
 │   └─client
 │     ├── ready.js
 │     └── interaction.js
+├── commands
+│   └─example
+│     └── ping.js
 ├── handler.js
 ├── bot.js
 ├── index.js
