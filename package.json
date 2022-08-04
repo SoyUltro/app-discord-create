@@ -36,4 +36,42 @@
 		"inquirer": "9.0.2",
 		"nanospinner": "1.1.0"
 	}
+=======
+  "name": "app-discord-create",
+  "version": "3.0.0",
+  "description": "A CLI tool to create a Discord bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "create discord bot",
+    "make discord bot",
+    "discord bot",
+    "discord",
+    "discordjs",
+    "bot"
+  ],
+  "homepage": "https://github.com/SoyUltro/app-discord-create#readme",
+  "bugs": {
+    "url": "https://github.com/SoyUltro/app-discord-create/issues",
+    "email": "bugs@soyultro.xyz"
+  },
+  "author": {
+    "name": "SoyUltro",
+    "email": "contact@soyultro.xyz",
+    "url": "https://soyultro.xyz"
+  },
+  "bin": "./index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SoyUltro/app-discord-create.git"
+  },
+  "dependencies": {
+    "fs-extra": "^10.1.0",
+    "inquirer": "9.0.2",
+    "nanospinner": "1.1.0"
+  }
 }
